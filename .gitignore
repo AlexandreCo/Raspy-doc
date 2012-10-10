@@ -1,0 +1,5 @@
+logs/*
+
+scripts/freebox/wifi.sh
+
+./scripts/wakeup.sh
