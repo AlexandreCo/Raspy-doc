@@ -1,0 +1,33 @@
+#! /bin/sh
+#
+# rf2txt startup script
+#
+
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+
+
+case "$1" in
+start|force-reload)
+	echo -n "$0 starting rf2txt..."
+	/usr/bin/rf2txt&
+	echo "done."
+
+	;;
+	
+restart|reload)
+	stop
+	start
+	;;
+	
+stop)
+	echo "$0 Stopping..."
+	killall rf2txt
+  	;;
+*)
+  echo "Usage: /etc/init.d/rf2txt {start|stop|restart|reload|force-reload}"
+  exit 1
+esac
+
+exit 0

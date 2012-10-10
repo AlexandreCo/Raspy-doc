@@ -1,0 +1,23 @@
+#!/bin/bash
+SERVICE='rf2txt'
+DATE=`date "+%x %X"`
+PREFIX=`date "+%y%m%d"`
+LOG_PATH="/var/www/GnOmeDataCenter/log"
+
+APACHE_LOG="/var/log/apache2/access_log"
+RF2TXT_LOG=$LOG_PATH"/"$PREFIX"_rf2txt.log"
+
+echo $APACHE_LOG
+echo $RF2TXT_LOG
+echo $PREFIX
+cp $APACHE_LOG $LOG_PATH"/"$PREFIX"_access_log"
+
+if ps ax | grep -v grep | grep $SERVICE | grep -v reload
+then
+#	echo "$DATE : $SERVICE service running, everything is fine" >> $RF2TXT_LOG
+	echo "$DATE : $SERVICE service running, everything is fine"
+else
+	echo "$DATE : $SERVICE is not running, reload it" >> $RF2TXT_LOG
+	wget "http://api.pushingbox.com/pushingbox?devid=vFDB6B6430E3B616"
+	/bin/rf2txt&
+fi

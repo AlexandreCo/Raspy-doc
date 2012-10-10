@@ -1,0 +1,13 @@
+#!/bin/bash
+DATE=`date "+%x %X"`
+PREFIX=`date "+%y%m%d"`
+DATA_FILE_PREFIX=`date "+%Y-%m-%d"`
+DATACENTER_PATH="/var/www/GnOmeDataCenter"
+
+PNG_PATH="out"
+LOG_PATH="log"
+LOG_BRUT_PATH="log_brut"
+CURRENT_DATA_FILE=$DATA_FILE_PREFIX"_data.txt"
+
+cp $DATACENTER_PATH/$LOG_BRUT_PATH/$CURRENT_DATA_FILE $DATACENTER_PATH/$PNG_PATH
+tar -czvf $DATACENTER_PATH"/"$LOG_PATH"/"$PREFIX"_archive.tar.gz" -C $DATACENTER_PATH $PNG_PATH
