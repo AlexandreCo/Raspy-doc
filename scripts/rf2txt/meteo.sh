@@ -3,15 +3,19 @@
 echo "temperature"
 /home/pi/Documents/scripts/rf2txt/display.sh 1 21 7 red
 /home/pi/Documents/scripts/rf2txt/display.sh 1 0 4 red
+/home/pi/Documents/scripts/rf2txt/display.sh 1 11 4 red
 
 /home/pi/Documents/scripts/rf2txt/display.sh 7 21 7 red
 /home/pi/Documents/scripts/rf2txt/display.sh 7 0 4 red
+/home/pi/Documents/scripts/rf2txt/display.sh 7 11 4 red
 
 /home/pi/Documents/scripts/rf2txt/display.sh 30 21 7 red
 /home/pi/Documents/scripts/rf2txt/display.sh 30 0 4 red
+/home/pi/Documents/scripts/rf2txt/display.sh 30 11 4 red
 
 /home/pi/Documents/scripts/rf2txt/display.sh 365 21 7 red
 /home/pi/Documents/scripts/rf2txt/display.sh 365 0 4 red
+/home/pi/Documents/scripts/rf2txt/display.sh 365 11 4 red
 
 #humiditée
 echo "humiditee"

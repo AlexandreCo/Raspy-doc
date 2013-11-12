@@ -1,5 +1,6 @@
 #!/bin/sh
 #temperature
+/home/pi/Documents/scripts/rf2txt/display.sh 1 11 4 red
 /home/pi/Documents/scripts/rf2txt/display.sh 1 21 7 red
 /home/pi/Documents/scripts/rf2txt/display.sh 1 0 4 red
 #humiditée
