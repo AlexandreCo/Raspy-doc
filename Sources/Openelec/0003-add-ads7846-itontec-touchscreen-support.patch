@@ -1,0 +1,507 @@
+From 6246f78584f5f9a89dc40f6702c3f1c9bb3c6dea Mon Sep 17 00:00:00 2001
+From: Alexandre Coffignal <acoffignal@geral.com>
+Date: Thu, 30 Oct 2014 16:12:03 +0100
+Subject: [PATCH 3/3] add ads7846 itontec touchscreen support
+
+---
+ .../usr/lib/modules-load.d/lirc_rpi.conf           |    2 +-
+ projects/RPi/linux/linux.arm.conf                  |   97 +++++-
+ ...3-add-ads7846-itontec-touchscreen-support.patch |  343 ++++++++++++++++++++
+ 3 files changed, 436 insertions(+), 6 deletions(-)
+ create mode 100644 projects/RPi/patches/linux/linux-03-add-ads7846-itontec-touchscreen-support.patch
+
+diff --git a/projects/RPi/filesystem/usr/lib/modules-load.d/lirc_rpi.conf b/projects/RPi/filesystem/usr/lib/modules-load.d/lirc_rpi.conf
+index 29dd000..95e8b9f 100644
+--- a/projects/RPi/filesystem/usr/lib/modules-load.d/lirc_rpi.conf
++++ b/projects/RPi/filesystem/usr/lib/modules-load.d/lirc_rpi.conf
+@@ -3,4 +3,4 @@
+ # This file contains the names of kernel modules that should be loaded
+ # at boot time, one per line. Lines beginning with "#" are ignored.
+ 
+-lirc_rpi
++#lirc_rpi
+diff --git a/projects/RPi/linux/linux.arm.conf b/projects/RPi/linux/linux.arm.conf
+index 00f484d..f63d6ad 100644
+--- a/projects/RPi/linux/linux.arm.conf
++++ b/projects/RPi/linux/linux.arm.conf
+@@ -1195,7 +1195,7 @@ CONFIG_ZD1211RW=m
+ #
+ CONFIG_INPUT=y
+ CONFIG_INPUT_FF_MEMLESS=y
+-# CONFIG_INPUT_POLLDEV is not set
++CONFIG_INPUT_POLLDEV=m
+ # CONFIG_INPUT_SPARSEKMAP is not set
+ # CONFIG_INPUT_MATRIXKMAP is not set
+ 
+@@ -1213,8 +1213,47 @@ CONFIG_INPUT_EVDEV=y
+ #
+ # Input Device Drivers
+ #
+-# CONFIG_INPUT_KEYBOARD is not set
+-# CONFIG_INPUT_MOUSE is not set
++CONFIG_INPUT_KEYBOARD=y
++# CONFIG_KEYBOARD_ADP5588 is not set
++# CONFIG_KEYBOARD_ADP5589 is not set
++CONFIG_KEYBOARD_ATKBD=y
++# CONFIG_KEYBOARD_QT1070 is not set
++# CONFIG_KEYBOARD_QT2160 is not set
++# CONFIG_KEYBOARD_LKKBD is not set
++CONFIG_KEYBOARD_GPIO=m
++CONFIG_KEYBOARD_GPIO_POLLED=m
++# CONFIG_KEYBOARD_TCA6416 is not set
++# CONFIG_KEYBOARD_TCA8418 is not set
++# CONFIG_KEYBOARD_MATRIX is not set
++# CONFIG_KEYBOARD_LM8323 is not set
++# CONFIG_KEYBOARD_LM8333 is not set
++# CONFIG_KEYBOARD_MAX7359 is not set
++# CONFIG_KEYBOARD_MCS is not set
++# CONFIG_KEYBOARD_MPR121 is not set
++# CONFIG_KEYBOARD_NEWTON is not set
++# CONFIG_KEYBOARD_OPENCORES is not set
++# CONFIG_KEYBOARD_SAMSUNG is not set
++# CONFIG_KEYBOARD_STOWAWAY is not set
++# CONFIG_KEYBOARD_SUNKBD is not set
++# CONFIG_KEYBOARD_XTKBD is not set
++CONFIG_INPUT_MOUSE=y
++CONFIG_MOUSE_PS2=y
++CONFIG_MOUSE_PS2_ALPS=y
++CONFIG_MOUSE_PS2_LOGIPS2PP=y
++CONFIG_MOUSE_PS2_SYNAPTICS=y
++CONFIG_MOUSE_PS2_CYPRESS=y
++CONFIG_MOUSE_PS2_TRACKPOINT=y
++# CONFIG_MOUSE_PS2_ELANTECH is not set
++# CONFIG_MOUSE_PS2_SENTELIC is not set
++# CONFIG_MOUSE_PS2_TOUCHKIT is not set
++# CONFIG_MOUSE_SERIAL is not set
++# CONFIG_MOUSE_APPLETOUCH is not set
++# CONFIG_MOUSE_BCM5974 is not set
++# CONFIG_MOUSE_CYAPA is not set
++# CONFIG_MOUSE_VSXXXAA is not set
++CONFIG_MOUSE_GPIO=m
++# CONFIG_MOUSE_SYNAPTICS_I2C is not set
++# CONFIG_MOUSE_SYNAPTICS_USB is not set
+ CONFIG_INPUT_JOYSTICK=y
+ # CONFIG_JOYSTICK_ANALOG is not set
+ # CONFIG_JOYSTICK_A3D is not set
+@@ -1241,7 +1280,47 @@ CONFIG_JOYSTICK_XPAD=m
+ CONFIG_JOYSTICK_XPAD_FF=y
+ CONFIG_JOYSTICK_XPAD_LEDS=y
+ # CONFIG_INPUT_TABLET is not set
+-# CONFIG_INPUT_TOUCHSCREEN is not set
++CONFIG_INPUT_TOUCHSCREEN=y
++CONFIG_TOUCHSCREEN_ADS7846_DEV=m
++CONFIG_TOUCHSCREEN_ADS7846=m
++# CONFIG_TOUCHSCREEN_AD7877 is not set
++# CONFIG_TOUCHSCREEN_AD7879 is not set
++# CONFIG_TOUCHSCREEN_ATMEL_MXT is not set
++# CONFIG_TOUCHSCREEN_AUO_PIXCIR is not set
++# CONFIG_TOUCHSCREEN_BU21013 is not set
++# CONFIG_TOUCHSCREEN_CY8CTMG110 is not set
++# CONFIG_TOUCHSCREEN_CYTTSP_CORE is not set
++# CONFIG_TOUCHSCREEN_CYTTSP4_CORE is not set
++# CONFIG_TOUCHSCREEN_DYNAPRO is not set
++# CONFIG_TOUCHSCREEN_HAMPSHIRE is not set
++# CONFIG_TOUCHSCREEN_EETI is not set
++# CONFIG_TOUCHSCREEN_FUJITSU is not set
++# CONFIG_TOUCHSCREEN_ILI210X is not set
++# CONFIG_TOUCHSCREEN_GUNZE is not set
++# CONFIG_TOUCHSCREEN_ELO is not set
++# CONFIG_TOUCHSCREEN_WACOM_W8001 is not set
++# CONFIG_TOUCHSCREEN_WACOM_I2C is not set
++# CONFIG_TOUCHSCREEN_MAX11801 is not set
++# CONFIG_TOUCHSCREEN_MCS5000 is not set
++# CONFIG_TOUCHSCREEN_MMS114 is not set
++# CONFIG_TOUCHSCREEN_MTOUCH is not set
++# CONFIG_TOUCHSCREEN_INEXIO is not set
++# CONFIG_TOUCHSCREEN_MK712 is not set
++# CONFIG_TOUCHSCREEN_PENMOUNT is not set
++# CONFIG_TOUCHSCREEN_EDT_FT5X06 is not set
++# CONFIG_TOUCHSCREEN_TOUCHRIGHT is not set
++# CONFIG_TOUCHSCREEN_TOUCHWIN is not set
++# CONFIG_TOUCHSCREEN_PIXCIR is not set
++# CONFIG_TOUCHSCREEN_WM97XX is not set
++# CONFIG_TOUCHSCREEN_USB_COMPOSITE is not set
++# CONFIG_TOUCHSCREEN_TOUCHIT213 is not set
++# CONFIG_TOUCHSCREEN_TSC_SERIO is not set
++# CONFIG_TOUCHSCREEN_TSC2005 is not set
++# CONFIG_TOUCHSCREEN_TSC2007 is not set
++# CONFIG_TOUCHSCREEN_ST1232 is not set
++# CONFIG_TOUCHSCREEN_SUR40 is not set
++# CONFIG_TOUCHSCREEN_TPS6507X is not set
++# CONFIG_TOUCHSCREEN_ZFORCE is not set
+ CONFIG_INPUT_MISC=y
+ # CONFIG_INPUT_AD714X is not set
+ # CONFIG_INPUT_ARIZONA_HAPTICS is not set
+@@ -1263,11 +1342,19 @@ CONFIG_INPUT_UINPUT=y
+ # CONFIG_INPUT_ADXL34X is not set
+ # CONFIG_INPUT_IMS_PCU is not set
+ # CONFIG_INPUT_CMA3000 is not set
++# CONFIG_INPUT_SOC_BUTTON_ARRAY is not set
+ 
+ #
+ # Hardware I/O ports
+ #
+-# CONFIG_SERIO is not set
++CONFIG_SERIO=y
++CONFIG_SERIO_SERPORT=y
++# CONFIG_SERIO_AMBAKMI is not set
++CONFIG_SERIO_LIBPS2=y
++# CONFIG_SERIO_RAW is not set
++# CONFIG_SERIO_ALTERA_PS2 is not set
++# CONFIG_SERIO_PS2MULT is not set
++# CONFIG_SERIO_ARC_PS2 is not set
+ # CONFIG_GAMEPORT is not set
+ 
+ #
+diff --git a/projects/RPi/patches/linux/linux-03-add-ads7846-itontec-touchscreen-support.patch b/projects/RPi/patches/linux/linux-03-add-ads7846-itontec-touchscreen-support.patch
+new file mode 100644
+index 0000000..3d711cc
+--- /dev/null
++++ b/projects/RPi/patches/linux/linux-03-add-ads7846-itontec-touchscreen-support.patch
+@@ -0,0 +1,343 @@
++From 825223607c9d21ff2891049089d25face9f79afb Mon Sep 17 00:00:00 2001
++From: Alexandre Coffignal <a.coffignal@gmail.com>
++Date: Mon, 27 Oct 2014 23:08:56 +0100
++Subject: [PATCH 2/2] add ads7846 itontec touchscreen support
++
++---
++ drivers/input/touchscreen/Kconfig          |   9 +
++ drivers/input/touchscreen/Makefile         |   1 +
++ drivers/input/touchscreen/ads7846_device.c | 283 +++++++++++++++++++++++++++++
++ 3 files changed, 293 insertions(+)
++ create mode 100644 drivers/input/touchscreen/ads7846_device.c
++
++diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
++index 6bb9a7d..9354419 100644
++--- a/drivers/input/touchscreen/Kconfig
+++++ b/drivers/input/touchscreen/Kconfig
++@@ -15,6 +15,14 @@ config OF_TOUCHSCREEN
++ 	def_tristate INPUT
++ 	depends on INPUT && OF
++ 
+++config TOUCHSCREEN_ADS7846_DEV
+++	tristate "rpi custom ad7846"
+++	help
+++	  Say Y here if you have AD7846 on itomtec caps
+++
+++	  If unsure, say N (but it's safe to say "Y").
+++
+++
++ config TOUCHSCREEN_88PM860X
++ 	tristate "Marvell 88PM860x touchscreen"
++ 	depends on MFD_88PM860X
++@@ -90,6 +98,7 @@ config TOUCHSCREEN_AD7879_SPI
++ 	  To compile this driver as a module, choose M here: the
++ 	  module will be called ad7879-spi.
++ 
+++
++ config TOUCHSCREEN_ATMEL_MXT
++ 	tristate "Atmel mXT I2C Touchscreen"
++ 	depends on I2C
++diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
++index 4be94fc..a865527 100644
++--- a/drivers/input/touchscreen/Makefile
+++++ b/drivers/input/touchscreen/Makefile
++@@ -13,6 +13,7 @@ obj-$(CONFIG_TOUCHSCREEN_AD7879)	+= ad7879.o
++ obj-$(CONFIG_TOUCHSCREEN_AD7879_I2C)	+= ad7879-i2c.o
++ obj-$(CONFIG_TOUCHSCREEN_AD7879_SPI)	+= ad7879-spi.o
++ obj-$(CONFIG_TOUCHSCREEN_ADS7846)	+= ads7846.o
+++obj-$(CONFIG_TOUCHSCREEN_ADS7846_DEV)	+= ads7846_device.o
++ obj-$(CONFIG_TOUCHSCREEN_ATMEL_MXT)	+= atmel_mxt_ts.o
++ obj-$(CONFIG_TOUCHSCREEN_AUO_PIXCIR)	+= auo-pixcir-ts.o
++ obj-$(CONFIG_TOUCHSCREEN_BU21013)	+= bu21013_ts.o
++diff --git a/drivers/input/touchscreen/ads7846_device.c b/drivers/input/touchscreen/ads7846_device.c
++new file mode 100644
++index 0000000..13211c0
++--- /dev/null
+++++ b/drivers/input/touchscreen/ads7846_device.c
++@@ -0,0 +1,283 @@
+++/*
+++ * Adds a ads7846 device
+++ *
+++ * Copyright (C) 2013, Noralf Tronnes
+++ *
+++ * This program is free software; you can redistribute it and/or modify
+++ * it under the terms of the GNU General Public License as published by
+++ * the Free Software Foundation; either version 2 of the License, or
+++ * (at your option) any later version.
+++ *
+++ * This program is distributed in the hope that it will be useful,
+++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+++ * GNU General Public License for more details.
+++ *
+++ * You should have received a copy of the GNU General Public License
+++ * along with this program; if not, write to the Free Software
+++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+++ */
+++
+++#include <linux/module.h>
+++#include <linux/kernel.h>
+++#include <linux/init.h>
+++#include <linux/spi/spi.h>
+++#include <linux/spi/ads7846.h>
+++#include <linux/gpio.h>
+++#include <asm/irq.h>
+++
+++#define DRVNAME "ads7846_device"
+++
+++
+++static unsigned int verbose = 0;
+++module_param(verbose, uint, 0);
+++MODULE_PARM_DESC(verbose, "0-2");
+++
+++static unsigned busnum = 0;
+++module_param(busnum, uint, 0);
+++MODULE_PARM_DESC(busnum, "SPI bus number (default=0)");
+++
+++static unsigned cs = 1;
+++module_param(cs, uint, 0);
+++MODULE_PARM_DESC(cs, "SPI chip select (default=1)");
+++
+++static unsigned speed = 2000000;
+++module_param(speed, uint, 0);
+++MODULE_PARM_DESC(speed, "SPI speed (default 2MHz)");
+++
+++static int mode = SPI_MODE_0;
+++module_param(mode, int, 0);
+++MODULE_PARM_DESC(mode, "SPI mode (default: SPI_MODE_0)");
+++
+++static int irq = 0;
+++module_param(irq, int, 0);
+++MODULE_PARM_DESC(mode, "SPI irq. (default: irq=gpio_to_irq(gpio_pendown))");
+++
+++
+++
+++static unsigned int	model = 7846;
+++module_param(model, int, 0);
+++MODULE_PARM_DESC(model, "Touch Controller model: 7843, 7845, 7846, 7873 (default=7846)");
+++
+++static int gpio_pendown = -1;
+++module_param(gpio_pendown, int, 0);
+++MODULE_PARM_DESC(gpio_pendown, "The GPIO used to decide the pendown state (required)");
+++
+++static unsigned int	x_plate_ohms = 400;
+++module_param(x_plate_ohms, uint, 0);
+++MODULE_PARM_DESC(x_plate_ohms, "Used to calculate pressure");
+++
+++static bool swap_xy = 0;
+++module_param(swap_xy, bool, 0);
+++MODULE_PARM_DESC(swap_xy, "Swap x and y axes");
+++
+++static unsigned int	x_min = 0;
+++module_param(x_min, uint, 0);
+++MODULE_PARM_DESC(x_min, "Minimum value for x-axis");
+++
+++static unsigned int x_max = 4095;
+++module_param(x_max, uint, 0);
+++MODULE_PARM_DESC(x_max, "Maximum value for x-axis");
+++
+++static unsigned int	y_min = 0;
+++module_param(y_min, uint, 0);
+++MODULE_PARM_DESC(y_min, "Minimum value for y-axis");
+++
+++static unsigned int y_max = 4095;
+++module_param(y_max, uint, 0);
+++MODULE_PARM_DESC(y_max, "Maximum value for x-axis");
+++
+++static unsigned int	pressure_min = 0;
+++module_param(pressure_min, uint, 0);
+++
+++static unsigned int pressure_max = ~0;
+++module_param(pressure_max, uint, 0);
+++
+++static bool keep_vref_on = true;
+++module_param(keep_vref_on, bool, 0);
+++MODULE_PARM_DESC(keep_vref_on, "Keep vref on for differential measurements as well (default=true)");
+++
+++static unsigned int	vref_delay_usecs = 0;
+++module_param(vref_delay_usecs, int, 0);
+++
+++static unsigned int	vref_mv = 0;
+++module_param(vref_mv, int, 0);
+++
+++static unsigned int	settle_delay_usecs = 0;
+++module_param(settle_delay_usecs, uint, 0);
+++
+++static unsigned int	penirq_recheck_delay_usecs = 0;
+++module_param(penirq_recheck_delay_usecs, uint, 0);
+++
+++static unsigned int	y_plate_ohms = 0;
+++module_param(y_plate_ohms, uint, 0);
+++MODULE_PARM_DESC(y_plate_ohms, "Not used by driver");
+++
+++static unsigned int	debounce_max = 0;
+++module_param(debounce_max, uint, 0);
+++MODULE_PARM_DESC(debounce_max, "Max number of additional readings per sample (0,1,2)");
+++
+++static unsigned int	debounce_tol = 0;
+++module_param(debounce_tol, uint, 0);
+++MODULE_PARM_DESC(debounce_tol, "Tolerance used for filtering");
+++
+++static unsigned int	debounce_rep = 0;
+++module_param(debounce_rep, uint, 0);
+++
+++static unsigned long irq_flags = 0;
+++module_param(irq_flags, ulong, 0);
+++
+++
+++static int spi_device_found(struct device *dev, void *data)
+++{
+++	struct spi_device *spi = container_of(dev, struct spi_device, dev);
+++
+++	pr_info(DRVNAME":    %s %s %dkHz %d bits mode=0x%02X\n", spi->modalias, dev_name(dev), spi->max_speed_hz/1000, spi->bits_per_word, spi->mode);
+++
+++	return 0;
+++}
+++
+++static void pr_spi_devices(void)
+++{
+++	pr_info(DRVNAME": SPI devices registered:\n");
+++	bus_for_each_dev(&spi_bus_type, NULL, NULL, spi_device_found);
+++	pr_info(DRVNAME":\n");
+++}
+++
+++static void spidevices_delete(struct spi_master *master, unsigned cs)
+++{
+++	struct device *dev;
+++	char str[32];
+++
+++	snprintf(str, sizeof(str), "%s.%u", dev_name(&master->dev), cs);
+++
+++	dev = bus_find_device_by_name(&spi_bus_type, NULL, str);
+++	if (dev) {
+++		pr_err(DRVNAME": Deleting %s\n", str);
+++		device_del(dev);
+++	}
+++}
+++
+++#define pr_pdata(sym)  pr_info(DRVNAME":   "#sym" = %d\n", pdata->sym)
+++
+++static struct ads7846_platform_data pdata_ads7846_device = { 0, };
+++
+++static struct spi_board_info spi_ads7846_device = {
+++	.modalias = "ads7846",
+++	.platform_data = &pdata_ads7846_device,
+++};
+++
+++struct spi_device *ads7846_spi_device = NULL;
+++
+++static int __init ads7846_device_init(void)
+++{
+++	struct spi_master *master;
+++	struct ads7846_platform_data *pdata = &pdata_ads7846_device;
+++
+++	if (verbose)
+++		pr_info("\n\n"DRVNAME": %s()\n", __func__);
+++
+++	if (gpio_pendown < 0) {
+++		pr_err(DRVNAME": Argument required: 'gpio_pendown'\n");
+++		return -EINVAL;
+++	}
+++
+++	if (verbose > 1)
+++		pr_spi_devices(); /* print list of registered SPI devices */
+++
+++	/* set SPI values */
+++	spi_ads7846_device.max_speed_hz = speed;
+++	spi_ads7846_device.bus_num = busnum;
+++	spi_ads7846_device.chip_select = cs;
+++	spi_ads7846_device.mode = mode;
+++	irq = irq ? irq : (gpio_to_irq(gpio_pendown));
+++	if(irq < 0) {
+++		pr_err(DRVNAME": Unable to get IRQ assigned to gpio_pendown'\n");
+++		return -EINVAL;
+++	}
+++
+++	spi_ads7846_device.irq = irq;
+++
+++	/* set platform_data values */
+++	pdata->model = model;
+++	pdata->vref_delay_usecs = vref_delay_usecs;
+++	pdata->vref_mv = vref_mv;
+++	pdata->keep_vref_on = keep_vref_on;
+++	pdata->swap_xy = swap_xy;
+++	pdata->settle_delay_usecs = settle_delay_usecs;
+++	pdata->penirq_recheck_delay_usecs = penirq_recheck_delay_usecs;
+++	pdata->x_plate_ohms = x_plate_ohms;
+++	pdata->y_plate_ohms = y_plate_ohms;
+++	pdata->x_min = x_min;
+++	pdata->x_max = x_max;
+++	pdata->y_min = y_min;
+++	pdata->y_max = y_max;
+++	pdata->pressure_min = pressure_min;
+++	pdata->pressure_max = pressure_max;
+++	pdata->debounce_max = debounce_max;
+++	pdata->debounce_tol = debounce_tol;
+++	pdata->debounce_rep = debounce_rep;
+++	pdata->gpio_pendown = gpio_pendown;
+++	pdata->irq_flags = irq_flags;
+++
+++	if (verbose) {
+++		pr_info(DRVNAME": Settings:\n");
+++		pr_pdata(model);
+++		pr_pdata(gpio_pendown);
+++		pr_pdata(swap_xy);
+++		pr_pdata(x_min);
+++		pr_pdata(x_max);
+++		pr_pdata(y_min);
+++		pr_pdata(y_max);
+++		pr_pdata(x_plate_ohms);
+++		pr_pdata(pressure_min);
+++		pr_pdata(pressure_max);
+++		pr_pdata(keep_vref_on);
+++		pr_pdata(vref_delay_usecs);
+++		pr_pdata(vref_mv);
+++		pr_pdata(settle_delay_usecs);
+++		pr_pdata(penirq_recheck_delay_usecs);
+++		pr_pdata(y_plate_ohms);
+++		pr_pdata(debounce_max);
+++		pr_pdata(debounce_tol);
+++		pr_pdata(debounce_rep);
+++	}
+++
+++	master = spi_busnum_to_master(spi_ads7846_device.bus_num);
+++	if (!master) {
+++		pr_err(DRVNAME": spi_busnum_to_master(%d) returned NULL.\n", spi_ads7846_device.bus_num);
+++		return -EINVAL;
+++	}
+++
+++	spidevices_delete(master, spi_ads7846_device.chip_select);      /* make sure it's available */
+++
+++	ads7846_spi_device = spi_new_device(master, &spi_ads7846_device);
+++	put_device(&master->dev);
+++	if (!ads7846_spi_device) {
+++		pr_err(DRVNAME": spi_new_device() returned NULL\n");
+++		return -EPERM;
+++	}
+++
+++	if (verbose)
+++		pr_spi_devices();
+++
+++	return 0;
+++}
+++
+++static void __exit ads7846_device_exit(void)
+++{
+++	if (verbose)
+++		pr_info(DRVNAME": %s()\n", __func__);
+++
+++	if (ads7846_spi_device) {
+++		device_del(&ads7846_spi_device->dev);
+++		kfree(ads7846_spi_device);
+++	}
+++}
+++
+++module_init(ads7846_device_init);
+++module_exit(ads7846_device_exit);
+++
+++MODULE_DESCRIPTION("Adds a ADS7846 device");
+++MODULE_AUTHOR("Noralf Tronnes");
+++MODULE_LICENSE("GPL");
++-- 
++1.9.1
++
+-- 
+1.7.9.5
+
