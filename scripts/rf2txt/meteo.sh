@@ -15,6 +15,7 @@
 #  Rain          : 9
 
 #temperature
+
 echo "temperature exterieur"
 /home/pi/Documents/scripts/rf2txt/display.sh 7 111 4 red > /dev/null
 /home/pi/Documents/scripts/rf2txt/display.sh 30 111 4 red > /dev/null
